@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import feign.Feign;
+import feign.Headers;
 import feign.Param;
 import feign.QueryMap;
 import feign.RequestLine;
@@ -29,9 +30,7 @@ public class FeignApplication {
         HashMap<String, String> queryMap = new HashMap<>();
         queryMap.put("type", type);
         List<Repo> repos = gitHub.repos(user, queryMap);
-        for (Repo repo : repos) {
-            System.out.println(repo.htmlUrl);
-        }
+        System.out.println(repos.stream().findFirst().orElse(null));
     }
 
     private static void contributors(GitHub gitHub, String owner, String repo) {
@@ -46,6 +45,7 @@ public class FeignApplication {
         List<Contributor> contributors(@Param("owner") String owner, @Param("repo") String repo);
 
         @RequestLine("GET /users/{user}/repos")
+        @Headers({"Content-Type: application/json"})
         List<Repo> repos(@Param("user") String owner, @QueryMap Map<String, String> queryMap);
     }
 
